@@ -41,12 +41,12 @@ export default {
         });
       } else {
         this.axios
-          .post("/api/setUser", {
+          .post("/api/user/register", {
             username: this.username,
             password: this.$md5(this.password)
           })
-          .then(response => {
-            if (response.data.status == true) {
+          .then(res => {
+            if (res.data.success) {
               this.$message({
                 message: "注册成功",
                 type: "success"
@@ -55,7 +55,7 @@ export default {
                 path: "/login" //跳转的路径
               });
             } else {
-              this.$message.error(response.data.msg);
+              this.$message.error(res.data.message);
             }
           })
           .catch(error => {
