@@ -30,7 +30,7 @@ export default {
   data() {
     return {
       username: "",
-      password: ""
+      password: "",
     };
   },
   methods: {
@@ -47,23 +47,25 @@ export default {
         });
       } else {
         this.axios
-          .post("/api/userLogin", {
-            username: this.username,
+          .post("/api/user/login", {
+            userName: this.username,
             password: this.$md5(this.password)
           })
-          .then(response => {
-            if (response.data.status == true) {
+          .then(res => {
+            if (res.data.success) {
+              // this.list=res.data.queryResult.list;
               this.$message({
                 message: "登录成功",
                 type: "success"
               });
               sessionStorage.setItem("username", this.username);
-              sessionStorage.setItem("token",response.data.token);
+              sessionStorage.setItem("uId", res.data.queryResult.list[0].uid);
+              sessionStorage.setItem("token",res.data.queryResult.list[0].token);
               this.$router.push({
                 path: "/admin/newEssay" //跳转的路径
               });
             } else {
-              this.$message.error(response.data.msg);
+              this.$message.error(res.data.msg);
             }
           })
           .catch(error => {

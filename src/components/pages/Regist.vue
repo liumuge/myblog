@@ -42,7 +42,7 @@ export default {
       } else {
         this.axios
           .post("/api/user/register", {
-            username: this.username,
+            userName: this.username,
             password: this.$md5(this.password)
           })
           .then(res => {

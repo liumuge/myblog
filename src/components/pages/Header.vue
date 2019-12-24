@@ -17,12 +17,15 @@
           <i class="wmui icon-search"></i>
           <input type="text" maxlength="30" value>
         </div>-->
-        <ul>
-          <li>
-            <router-link to="/lables">标签</router-link>
+        <ul style="margin-left: 3rem">
+          <li v-if="this.username!=null">
+            <router-link to="/admin/tags">标签</router-link>
           </li>
-          <li>
-            <router-link to="/login">新随笔</router-link>
+          <li v-if="this.username!=null">
+            <router-link to="/admin/newEssay">新随笔</router-link>
+          </li>
+          <li v-if="this.username==null">
+            <router-link to="/login">登录</router-link>
           </li>
         </ul>
       </nav>
@@ -34,8 +37,17 @@ export default {
   name: "Header",
   data() {
     return {
-      search: ""
+      search: "",
+      username:""
     };
+  },
+  methods: {
+    getName: function () {
+      this.username = sessionStorage.getItem("username");
+    },
+  },
+  created(){
+    this.getName();
   }
 };
 </script>
@@ -64,7 +76,7 @@ export default {
 }
 .header-nav {
   display: -webkit-box;
-  margin-right: 5rem;
+  margin-right: 13rem;
 }
 .blog-header .header-nav ul {
   list-style: none;

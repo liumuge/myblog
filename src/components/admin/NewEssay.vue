@@ -19,7 +19,7 @@
             placeholder="请选择标签"
             style="width:100%"
           >
-            <el-option v-for="item in options" :key="item.id" :label="item.name" :value="item.name"></el-option>
+            <el-option v-for="tag in options" :key="tag.id" :label="tag.tagName" :value="tag.id"></el-option>
           </el-select>
         </el-col>
         <el-col :span="6" :offset="2">
@@ -84,17 +84,18 @@ export default {
         });
       } else {
         let html = this.$refs.md.d_render;
+        let uId = sessionStorage.getItem("uId");
         this.axios
-          .post("/api/admin/addArticle", {
-            username: this.username,
+          .post("/api/article/addArticle", {
+            uid: uId,
             title: this.title,
-            content: this.context,
-            html:html,
-            tags: JSON.stringify(this.tags),
-            state:1
+            content: html,
+            // html:html,
+            tags: this.tags,
+            status:1
           })
-          .then(response => {
-            if ((response.data.status == true)) {
+          .then(res => {
+            if ((res.data.success)) {
               this.$message({
                 message: "发布成功",
                 type: "success"
@@ -102,8 +103,8 @@ export default {
               this.title = "";
               this.context = "";
               this.tags = [];
-            } else if ((response.data.status == false)) {
-              this.$message.error(response.data.msg);
+            } else {
+              this.$message.error(res.data.message);
             }
           })
           .catch(error => {
@@ -129,17 +130,18 @@ export default {
         });
       } else {
         let html = this.$refs.md.d_render;
+        let uId = sessionStorage.getItem("uId");
         this.axios
-          .post("/api/admin/addArticle", {
-            username: this.username,
+          .post("/api/article/addArticle", {
+            uid: uId,
             title: this.title,
             content: this.context,
             html:html,
-            tags: JSON.stringify(this.tags),
-            state:0
+            tags: this.tags,
+            status:0
           })
-          .then(response => {
-            if ((response.data.status == true)) {
+          .then(res => {
+            if ((res.data.success)) {
               this.$message({
                 message: "保存成功",
                 type: "success"
@@ -147,8 +149,8 @@ export default {
               this.title = "";
               this.context = "";
               this.tags = [];
-            } else if ((response.data.status == false)) {
-              this.$message.error(response.data.msg);
+            } else{
+              this.$message.error(res.data.message);
             }
           })
           .catch(error => {
@@ -175,20 +177,23 @@ export default {
          */
         this.$refs.md.$img2Url(pos, response.data.url);
       });
+    },
+    getTagAll() {
+      let uId = sessionStorage.getItem("uId");
+      this.axios
+      .get("/api/tag/getTagAll/" + uId)
+      .then(res => {
+        this.options = res.data.queryResult.list;
+      })
+      .catch(error => {
+        console.log(error);
+      });
     }
   },
   mounted() {
     // console.log(window.document.getElementsByClassName('v-show-content-html')[0].innerHTML())
     this.username = sessionStorage.getItem("username");
-    this.axios
-      .get("/api/admin/getTagAll")
-      .then(response => {
-        let data = response.data;
-        this.options = data;
-      })
-      .catch(error => {
-        console.log(error);
-      });
+    this.getTagAll();
   }
 };
 </script>

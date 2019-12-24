@@ -1,156 +1,183 @@
 <template>
-  <section class="blog-body">
-    <div class="blog-list">
-      <p v-if="flag==0" class="nothing">Nothing</p>
-      <ul v-else-if="flag==1" class="list-article">
-        <li class="article" v-for="(article,index) in articleList" :key="article.id">
-          <div class="article-header">
-            <h2 class="article-title">
-              <!-- <router-link to="/admin/content" class="title-link">{{article.title}}</router-link> -->
-              <span class="title-link" @click="tocontent(article)">{{article.title}}</span>
-              <el-tag
-                size="mini"
-                hit
-                v-for="tag in tags[index]"
-                :key="tag"
-                style="margin-right:10px"
-              >{{tag}}</el-tag>
-            </h2>
-            <p class="article-body">{{article.summary | cutString(180)}}</p>
-          </div>
-          <!-- <div class="article-footer">
-              <span class="iconfont icon-riqi icons">
-                <span class="content">2588-99-6</span>
-              </span>
-              <span class="iconfont icon-chakantiezihuifu icons">
-                <span class="content">2588-99-6</span>
-              </span>
-              <span class="iconfont icon-yanjing icons">
-                <span class="content">2588-99-6</span>
-              </span>
-          </div>-->
-        </li>
-      </ul>
-    </div>
-    <el-pagination
-      small
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      layout="prev, pager, next"
-      :total="count"
-      :page-size="5"
-      style="text-align: center;margin: 15px auto;"
-    ></el-pagination>
-  </section>
+  <div class="home">
+    <el-row id="artList" type="flex" justify="space-around" style="margin-top: 5%">
+      <el-col :span="16" style="width: 55vw">
+        <el-row class="art-item" v-for="article in articleList">
+          <el-card shadow="hover">
+            <h5 style="height: 50px">
+              <router-link to="/article" tag="span" class="art-title">{{article.title}}
+              </router-link>
+            </h5>
+            <el-row class="art-info d-flex align-items-center justify-content-start">
+              <div class="art-time"><i class="el-icon-time"></i>{{article.creatTime}}</div>
+              <div class="d-flex align-items-center">
+                <img class="tag" src="@/assets/images/tag.png"/>：
+                <el-tag size="mini" v-for="tag in article.tags" style="margin-left:10px">
+                  {{tag.tagName}}
+                </el-tag>
+              </div>
+            </el-row>
+            <el-row class="art-body">
+              <!-- 显示缩略图 未完成-->
+              <!-- <div class="side-img hidden-sm-and-down">
+              <img class="art-banner"
+              src="@/assets/images/vue.jpg"></div>-->
+              <div class="side-abstract">
+                <div class="art-abstract">
+                  {{article.content}}
+                </div>
+                <div class="art-more">
+                  <router-link to="/article" tag="span">
+                    <el-button plain>编辑</el-button>
+                  </router-link>
+                  <div class="view"><i class="el-icon-view"></i>0</div>
+                </div>
+              </div>
+            </el-row>
+          </el-card>
+          <img class="star" src="@/assets/images/star.png"/>
+        </el-row>
+        <el-pagination
+          background
+          layout="prev, pager, next"
+          :total="params.totalCount"
+          :page-size="params.pageSize"
+          :current-page="params.currentPage"
+          @current-change="changePage"
+        >
+        </el-pagination>
+      </el-col>
+    </el-row>
+  </div>
 </template>
 <script>
-export default {
-  data() {
-    return {
-      articleList: [],
-      tags: [],
-      flag: 1, //是否有草稿
-      username: "",
-      pageNum: 1,
-      pageSize: 5,
-      count: 0
-    };
-  },
-  methods: {
-    tocontent(article) {
-      this.$router.push({ path: "/admin/content", query: { article } });
+  export default {
+    data() {
+      return {
+        articleList: [],
+        params: {
+          currentPage: 1,//页码
+          pageSize: 5,//每页显示个数
+          totalCount: 10,//总记录数
+          totalPage: 1,//总页数
+        },
+        status: 0,
+      };
     },
-    handleCurrentChange(val) {
-      this.getData(val, this.pageSize);
-      this.pageNum = val;
-    },
-    handleSizeChange(val) {
-      // this.pageSize = val;
-    },
-    getData(pageNum, pageSize) {
-      this.axios
-        .get("/api/getArticle", {
-          params: {
-            state: 0,
-            username: this.username,
-            pageNum,
-            pageSize
-          }
+    methods: {
+      changePage(currentPage) {
+        this.params.currentPage = currentPage;
+        this.getArticleList(this.params.currentPage, this.params.pageSize);
+      },
+      getArticleList(currentPage, pageSize) {
+        status = this.status;
+        let uId = sessionStorage.getItem("uId");
+        this.axios
+        .get("/api/article/getArticleList", {
+          params: {uId, currentPage, pageSize, status}
         })
-        .then(response => {
-          this.articleList = response.data[0];
-          this.count = response.data[1][0].count;
-          this.flag = this.articleList.length < 1 ? 0 : 1;
-          for (let item of this.articleList) {
-            let str = item.type
-              .substring(1, item.type.length - 1)
-              .replace(/\"/g, "");
-            let tag = str.split(",");
-            this.tags.push(tag);
-          }
+        .then(res => {
+          this.articleList = res.data.queryResult.list[0].list;
+          this.params = res.data.queryResult.list[0];
         })
         .catch(error => {
           console.log(error);
         });
+      }
+    },
+    mounted() {
+      this.getArticleList(this.params.currentPage, this.params.pageSize);
     }
-  },
-  mounted() {
-    this.username = sessionStorage.getItem("username");
-    this.getData(this.pageNum, this.pageSize);
-  }
-};
+  };
 </script>
 <style scoped>
-.icons {
-  font-size: 14px;
-  color: #909399;
-  margin-right: 10px;
-}
-.content {
-  margin-left: 3px;
-}
-.blog-body {
-  max-width: 770px;
-  margin: 100px auto 0;
-  position: relative;
-  padding-left: 15px;
-  padding-right: 15px;
-}
-.blog-list ul {
-  list-style: none;
-}
-.title-link {
-  vertical-align: middle;
-  cursor: pointer;
-}
-.title-link:hover {
-  color: #409eff;
-}
-.article {
-  margin: 0 0 15px;
+  #side .item {
+    margin-bottom: 30px;
+  }
 
-  background-color: #fff;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  border-radius: 0;
-}
-.article-header {
-  padding: 10px 20px 10px;
-  /* border-bottom: 1px solid #f2f6fc; */
-}
+  .art-item {
+    margin-bottom: 30px;
+    position: relative;
+  }
 
-.blog-list .article .article-title {
-  font-size: 20px;
-  font-weight: 400;
-}
-.blog-list .article .article-body {
-  margin: 10px 0;
-  color: #666;
-   word-break: break-all;
-  /* overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 2; */
-  /* -webkit-box-orient: vertical; */
-}
+  .art-item .star {
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+
+  img.tag {
+    width: 16px;
+    height: 16px;
+  }
+
+  .art-title {
+    border-left: 3px solid #F56C6C;
+    padding-left: 5px;
+    cursor: pointer;
+  }
+
+  .art-title:hover {
+    padding-left: 10px;
+    color: #409EFF;
+  }
+
+  .art-time {
+    margin-right: 20px;
+  }
+
+  .art-body {
+    display: flex;
+    padding: 10px 0;
+  }
+
+  .side-img {
+    height: 150px;
+    width: 270px;
+    overflow: hidden;
+    margin-right: 10px;
+  }
+
+  img.art-banner {
+    width: 100%;
+    height: 100%;
+    transition: all 0.6s;
+  }
+
+  img.art-banner:hover {
+    transform: scale(1.4);
+  }
+
+  .side-abstract {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .art-abstract {
+    flex: 1;
+    color: #aaa;
+  }
+
+  .art-more {
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+
+  .art-more .view {
+    color: #aaa;
+  }
+
+  h5 {
+    font-size: 18px;
+  }
+
+  .pagination {
+    background-color: #F9F9F9;
+  }
 </style>
 
