@@ -89,8 +89,8 @@ export default {
           .post("/api/article/addArticle", {
             uid: uId,
             title: this.title,
-            content: html,
-            // html:html,
+            content: this.context,
+            contentHtml:html,
             tags: this.tags,
             status:1
           })
@@ -136,7 +136,7 @@ export default {
             uid: uId,
             title: this.title,
             content: this.context,
-            html:html,
+            contentHtml:html,
             tags: this.tags,
             status:0
           })

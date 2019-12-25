@@ -13,6 +13,11 @@ export default new Router({
       component: Index
     },
     {
+      path:'/article',
+      name:'article',
+      component: resolve => require(['@/components/pages/article'], resolve)
+    },
+    {
       path: '/contents',
       name: 'Contents',
       component: resolve => require(['@/components/pages/Contents'], resolve)
@@ -44,15 +49,23 @@ export default new Router({
           path: 'newEssay',
           name: 'newEssay',
           meta: {
-            requireAuth: true,  
+            requireAuth: true,
           },
           component: resolve => require(['@/components/admin/NewEssay'], resolve)
+        },
+        {
+          path: 'management',
+          name: 'management',
+          meta: {
+            requireAuth: true,
+          },
+          component: resolve => require(['@/components/admin/management'], resolve)
         },
         {
           path: 'tags',
           name: 'tags',
           meta: {
-            requireAuth: true, 
+            requireAuth: true,
           },
           component: resolve => require(['@/components/admin/Tags'], resolve)
         },
@@ -60,7 +73,7 @@ export default new Router({
           path: 'settings',
           name: 'settings',
           meta: {
-            requireAuth: true,  
+            requireAuth: true,
           },
           component: resolve => require(['@/components/admin/Settings'], resolve)
         },
@@ -68,7 +81,7 @@ export default new Router({
           path: 'draft',
           name: 'draft',
           meta: {
-            requireAuth: true, 
+            requireAuth: true,
           },
           component: resolve => require(['@/components/admin/Draft'], resolve)
         },
@@ -76,7 +89,7 @@ export default new Router({
           path: 'content',
           name: 'content',
           meta: {
-            requireAuth: true,  
+            requireAuth: true,
           },
           component: resolve => require(['@/components/admin/DraftContent'], resolve)
         },
@@ -84,7 +97,7 @@ export default new Router({
           path: 'update',
           name: 'update',
           meta: {
-            requireAuth: true,  
+            requireAuth: true,
           },
           component: resolve => require(['@/components/admin/Update'], resolve)
         },
@@ -92,7 +105,7 @@ export default new Router({
           path: 'comments',
           name: 'comments',
           meta: {
-            requireAuth: true,  
+            requireAuth: true,
           },
           component: resolve => require(['@/components/admin/Comments'], resolve)
         }

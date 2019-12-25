@@ -23,7 +23,7 @@
               <router-link to="/admin/settings">设置</router-link>
             </li>
             <li>
-              <router-link to="/admin/settings">管理</router-link>
+              <router-link to="/admin/management">管理</router-link>
             </li>
             <li>
               <router-link to="/admin/comments">评论</router-link>

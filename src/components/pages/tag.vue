@@ -4,6 +4,7 @@
 			<div slot="header" class="d-flex align-items-center">
 				<img class="card-icon" src="@/assets/images/biaoqian.png" />
 				<span>标签</span>
+
 			</div>
 			<div class="text item">
 				<el-tag size="mini" class="tag-item" @click="tag('Java')">Java[12]</el-tag>

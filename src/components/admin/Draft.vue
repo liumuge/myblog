@@ -24,7 +24,7 @@
               src="@/assets/images/vue.jpg"></div>-->
               <div class="side-abstract">
                 <div class="art-abstract">
-                  {{article.content}}
+                  {{article.content | ellipsis}}
                 </div>
                 <div class="art-more">
                   <router-link to="/article" tag="span">
@@ -63,6 +63,18 @@
         },
         status: 0,
       };
+    },
+    filters: {
+      //限制显示长度
+      ellipsis(value) {
+        if (!value) {
+          return ''
+        }
+        if (value.length > 500) {
+          return value.slice(0, 325) + '...'
+        }
+        return value
+      }
     },
     methods: {
       changePage(currentPage) {
@@ -159,6 +171,11 @@
   .art-abstract {
     flex: 1;
     color: #aaa;
+    width: 500px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  / / 文本溢出显示省略号 white-space: normal;
+    word-break: break-all;
   }
 
   .art-more {
