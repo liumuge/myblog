@@ -19,6 +19,15 @@
           </div>
           <div v-html="article.contentHtml">
           </div>
+          <div>
+            <el-form label-position="top" label-width="80px" :model="formLabelAlign">
+              <el-divider></el-divider>
+              <el-form-item label="评论">
+                <el-input type="textarea" v-model="contentsText"></el-input>
+                <el-button type="primary" style="float:right;margin: 2% 3% 0 0">提交</el-button>
+              </el-form-item>
+            </el-form>
+          </div>
         </el-card>
       </el-col>
     </el-row>
@@ -34,6 +43,7 @@
     name: "article",
     data() {
       return {
+        contentsText:'',
         article:'',
         articleId:0,
       }

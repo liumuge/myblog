@@ -103,7 +103,7 @@
           return ''
         }
         if (value.length > 310) {
-          return value.slice(0, 200) + '...'
+          return value.slice(0, 200) + ' . . . '
         }
         return value
       }

@@ -25,29 +25,33 @@
                 style="width: 28%;margin:0 1% 0 1%"></el-input>
               <el-button type="primary" size="medium" v-on:click="" :loading="false">查 询</el-button>
             </div>
+
+
             <el-table
-              :data="tableData"
+              :data="articleList"
               border
               style="width: 100%">
               <el-table-column
-                prop="date"
+                prop="creatTime"
                 label="创建时间"
                 width="150">
               </el-table-column>
               <el-table-column
-                prop="date"
+                prop="updateTime"
                 label="最近更新时间"
                 width="150">
               </el-table-column>
               <el-table-column
-                prop="name"
-                label="用户姓名"
+                prop="title"
+                label="标题"
                 width="120">
               </el-table-column>
               <el-table-column
-                prop="province"
                 label="内容简介"
                 width="280">
+                <template slot-scope="articleContent">
+                  {{articleContent.row.content | ellipsis}}
+                </template>
               </el-table-column>
               <el-table-column
                 prop="city"
@@ -55,7 +59,7 @@
                 width="100">
               </el-table-column>
               <el-table-column
-                prop="address"
+                prop="views"
                 label="访问量"
                 width="100">
               </el-table-column>
@@ -63,19 +67,23 @@
                 fixed="right"
                 label="操作"
                 width="170">
-                <template slot-scope="scope">
+                <template slot-scope="article">
                   <el-button type="text" size="small">置顶</el-button>
-                  <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-                  <el-button type="text" size="small">编辑</el-button>
-                  <el-button type="text" size="small">删除</el-button>
+                  <el-button @click="goto(article.row.id)" type="text" size="small">查看</el-button>
+                  <el-button  type="text" size="small">编辑</el-button>
+                  <el-button @click="removeArticle(article.row.id)"type="text" size="small">删除</el-button>
                 </template>
               </el-table-column>
             </el-table>
             <el-pagination
               background
               layout="prev, pager, next"
-              :total="1000"
-              style="float:right;margin: 2% 0 2% 0">
+              :total="params.totalCount"
+              :page-size="params.pageSize"
+              :current-page="params.currentPage"
+              @current-change="changePage"
+              style="float:right;margin: 2% 3% 2% 0"
+            >
             </el-pagination>
           </div>
         </el-card>
@@ -87,43 +95,17 @@
 
 <script>
   export default {
-    methods: {
-      handleClick(row) {
-        console.log(row);
-      }
-    },
-
     data() {
       return {
-        tableData: [{
-          date: '2016-05-02',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市',
-          zip: 200333
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市',
-          zip: 200333
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市',
-          zip: 200333
-        }, {
-          date: '2016-05-03',
-          name: '王小虎',
-          province: '上海',
-          city: '普陀区',
-          address: '上海市',
-          zip: 200333
-        }],
+        list:null,
+        articleList: [],
+        params: {
+          currentPage: 1,//页码
+          pageSize: 6,//每页显示个数
+          totalCount: 10,//总记录数
+          totalPage: 1,//总页数
+        },
+        status: 1,
         pickerOptions: {
           shortcuts: [{
             text: '最近一周',
@@ -153,8 +135,74 @@
         },
         value1: [new Date(2000, 10, 10, 10, 10), new Date(2000, 10, 11, 10, 10)],
         value2: ''
-
       }
+    },
+    filters: {
+      //限制显示长度
+      ellipsis(value) {
+        if (!value) {
+          return ''
+        }
+        if (value.length > 50) {
+          return value.slice(0, 25) + ' . . . '
+        }
+        return value
+      }
+    },
+    methods: {
+      getArticleList(currentPage, pageSize) {
+        let uId = sessionStorage.getItem("uId");
+        status = this.status;
+        this.axios
+        .get("/api/article/getArticleList", {
+          params: {uId, currentPage, pageSize, status}
+        })
+        .then(res => {
+          this.articleList = res.data.queryResult.list[0].list;
+          this.params = res.data.queryResult.list[0];
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      },
+      changePage(currentPage) {
+        this.params.currentPage = currentPage;
+        this.getArticleList(this.params.currentPage, this.params.pageSize);
+      },
+      goto(articleId) {
+        this.$router.push({
+          name: "article",
+          params: {
+            id: articleId,
+          }
+        });
+      },
+      removeArticle(articleId) {
+        this.axios
+        .get("/api/article/removeArticle", {
+          params: {articleId,}
+        })
+        .then(res => {
+          if ((res.data.success)) {
+            console.log(this.params.currentPage)
+            this.$message({
+              message: "删除成功!",
+              type: "success",
+              onClose:this.getArticleList(this.params.currentPage, this.params.pageSize)
+            });
+          }
+        })
+        .catch(error => {
+          this.$message({
+            message: "删除失败!",
+            type: "error"
+          });
+          console.log(error);
+        });
+      }
+    },
+    mounted() {
+      this.getArticleList(this.params.currentPage, this.params.pageSize);
     }
   }
 </script>
