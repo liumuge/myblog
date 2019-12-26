@@ -54,9 +54,12 @@
                 </template>
               </el-table-column>
               <el-table-column
-                prop="city"
                 label="状态"
                 width="100">
+                <template slot-scope="articleStatus">
+                  <span v-if="articleStatus.row.status==1">已发布</span>
+                  <span v-if="articleStatus.row.status==0">草稿</span>
+                </template>
               </el-table-column>
               <el-table-column
                 prop="views"
@@ -105,7 +108,6 @@
           totalCount: 10,//总记录数
           totalPage: 1,//总页数
         },
-        status: 1,
         pickerOptions: {
           shortcuts: [{
             text: '最近一周',
@@ -152,10 +154,9 @@
     methods: {
       getArticleList(currentPage, pageSize) {
         let uId = sessionStorage.getItem("uId");
-        status = this.status;
         this.axios
-        .get("/api/article/getArticleList", {
-          params: {uId, currentPage, pageSize, status}
+        .get("/api/article/findListM", {
+          params: {uId, currentPage, pageSize}
         })
         .then(res => {
           this.articleList = res.data.queryResult.list[0].list;

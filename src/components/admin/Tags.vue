@@ -1,22 +1,41 @@
 <template>
   <section class="blog-body">
-    <el-tag
-      :key="index"
-      v-for="(tag,index) in Tags"
-      closable
-      :disable-transitions="false"
-      @close="delTag(tag.id)"
-    >{{tag.tagName}}
-    </el-tag>
-    <el-input
-      class="input-new-tag"
-      v-if="inputVisible"
-      v-model="inputValue"
-      ref="saveTagInput"
-      size="small"
-      @keyup.enter.native="addTag"
-    ></el-input>
-    <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+    <div v-if="creatTime!=null">
+      <el-card class="box-card">
+        <div slot="header" class="clearfix">
+          <h2 style="height: 50px">
+            <a>
+              <span class="art-title" @click="goto(articleId)">{{articleTitle}}</span>
+            </a>
+          </h2>
+          <i class="el-icon-time"></i>
+          <span>{{creatTime}}</span>
+        </div>
+        <div>
+          <h3>评论内容:</h3><br/>
+          <p>{{comment}}</p>
+        </div>
+      </el-card>
+    </div>
+    <div v-if="creatTime==null">
+      <el-tag
+        :key="index"
+        v-for="(tag,index) in Tags"
+        closable
+        :disable-transitions="false"
+        @close="delTag(tag.id)">{{tag.tagName}}
+      </el-tag>
+      <el-input
+        class="input-new-tag"
+        v-if="inputVisible"
+        v-model="inputValue"
+        ref="saveTagInput"
+        size="small"
+        @keyup.enter.native="addTag"
+      ></el-input>
+      <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+    </div>
+
   </section>
 </template>
 <script>
@@ -26,7 +45,11 @@
       return {
         Tags: [],
         inputVisible: false,
-        inputValue: ""
+        inputValue: "",
+        creatTime: "",
+        articleTitle: "",
+        comment: "",
+        articleId:"",
       };
     },
     methods: {
@@ -64,7 +87,7 @@
           return;
         }
         let uId = sessionStorage.getItem("uId");
-        console.log(uId,1111)
+        console.log(uId, 1111)
         this.axios.post("/api/tag/addTag", {
           tagName: inputValue,
           uid: uId
@@ -97,9 +120,21 @@
         .catch(error => {
           console.log(error);
         });
-      }
+      },
+      goto(articleId) {
+        this.$router.push({
+          name: "article",
+          params: {
+            id: articleId,
+          }
+        });
+      },
     },
     mounted() {
+      this.articleId=this.$route.params.articleId;
+      this.creatTime = this.$route.params.creatTime;
+      this.articleTitle = this.$route.params.articleTitle;
+      this.comment = this.$route.params.comment;
       this.getTagAll();
     }
   };
@@ -117,7 +152,11 @@
     padding-top: 0;
     padding-bottom: 0;
   }
-
+  .art-title {
+    border-left: 3px solid #F56C6C;
+    padding-left: 5px;
+    cursor: pointer;
+  }
   .input-new-tag {
     width: 90px;
     margin-left: 10px;

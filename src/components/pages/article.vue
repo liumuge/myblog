@@ -29,8 +29,11 @@
             <el-form label-position="top" label-width="80px" :model="formLabelAlign">
               <el-divider></el-divider>
               <el-form-item label="评论">
-                <el-input type="textarea" v-model="contentsText"></el-input>
-                <el-button type="primary" style="float:right;margin: 2% 3% 0 0">提交</el-button>
+                <el-input type="textarea" v-model="contentsText" rows="3" maxlength="1000"  @input="descInput"></el-input>
+                <div style="float:right;margin: 2% 2% 0 0">
+                  <span style="font-size: 12px;color: #999999">评论将由博主筛选后显示，对所有人可见 | 还能输入<em>{{txtVal}}</em>个字符 &nbsp;&nbsp;<el-button
+                    type="primary" size="small" style="margin-left:15px" @click="addComment">发表评论</el-button> </span>
+                </div>
               </el-form-item>
             </el-form>
           </div>
@@ -49,26 +52,59 @@
     name: "article",
     data() {
       return {
-        contentsText:'',
-        article:'',
-        articleId:0,
+        contentsText: '',
+        article: '',
+        articleId: 0,
+        txtVal: 1000,
       }
     },
-    methods:{
-      getArticle(articleId){
+    methods: {
+      descInput() {
+        this.txtVal = 1000-this.contentsText.length;
+      },
+      getArticle(articleId) {
         this.axios
         .get("/api/article/getArticle", {
           params: {articleId}
         })
         .then(res => {
-         this.article = res.data.queryResult.list[0];
+          this.article = res.data.queryResult.list[0];
+        })
+      },
+      addComment(){
+        let uId = sessionStorage.getItem("uId");
+        this.axios
+        .post("/api/comment/addComment", {
+          articleId:this.articleId,
+          comment:this.contentsText,
+          uid:uId,
+        })
+        .then(res => {
+          if ((res.data.success)) {
+            this.$message({
+              message: "发表成功,评论将由博主筛选后显示，对所有人可见",
+              type: "success"
+            });
+            this.contentsText="";
+          } else {
+            this.$message.error("发表失败,请稍后重试");
+          }
+        })
+      },
+      updateViews(articleId){
+        this.axios
+        .get("/api/article/updateViews", {
+          params: {articleId}
         })
       }
     },
     components: {Header, Footer},
     created() {
-      sessionStorage.setItem("articleId", this.$route.params.id);
-      this.articleId=sessionStorage.getItem("articleId")
+      if (this.$route.params.id!=null){
+        sessionStorage.setItem("articleId", this.$route.params.id);
+      }
+      this.articleId = sessionStorage.getItem("articleId")
+      this.updateViews(this.articleId);
       this.getArticle(this.articleId);
     },
   }
@@ -103,10 +139,12 @@
   img.has {
     width: 100%;
   }
+
   img.tag {
     width: 16px;
     height: 16px;
   }
+
   #statement {
     border-left: 3px solid #F56C6C;
     padding: 20px;

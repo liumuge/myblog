@@ -2,7 +2,6 @@
   <div class="home">
     <Header></Header>
 
-
     <el-row id="artList" type="flex" justify="space-around" style="margin-top: 5%">
       <el-col :span="2"></el-col>
       <el-col :span="14" style="width: 55vw">

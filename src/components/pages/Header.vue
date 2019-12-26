@@ -19,7 +19,7 @@
         </div>-->
         <ul style="margin-left: 3rem">
           <li v-if="this.username!=null">
-            <router-link to="/admin/tags">标签</router-link>
+            <router-link to="/admin/settings">设置</router-link>
           </li>
           <li v-if="this.username!=null">
             <router-link to="/admin/newEssay">新随笔</router-link>

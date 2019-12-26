@@ -32,8 +32,6 @@
   </section>
 </template>
 <script>
-  // import mavonEditor from 'mavon-editor'
-  // import 'mavon-editor/dist/css/index.css'
   export default {
     data() {
       return {
@@ -211,7 +209,7 @@
             this.title = res.data.queryResult.list[0].title;
             this.context = res.data.queryResult.list[0].content;
             for (var i in res.data.queryResult.list[0].tags) {
-              this.tags.push(res.data.queryResult.list[0].tags[i].tagName);
+              this.tags.push(res.data.queryResult.list[0].tags[i].id);
             }
           })
         }
@@ -219,7 +217,6 @@
     }
     ,
     mounted() {
-      // console.log(window.document.getElementsByClassName('v-show-content-html')[0].innerHTML())
       this.username = sessionStorage.getItem("username");
       this.getTagAll();
       this.articleId = this.$route.params.id;
