@@ -1,10 +1,10 @@
 <template>
   <div class="tag">
     <el-card class="box-card">
-      <div slot="header" class="d-flex align-items-center">
+      <div slot="header" class="d-flex align-items-center" style="height: 140px">
         <div class="demo-basic--circle">
-          <div class="block" style="text-align: center;">
-            <img src="@/assets/images/avater.png" style="width: 75px; border-radius: 50%;">
+          <div class="block" style="text-align: center;margin-top: 15%">
+            <img src="@/assets/images/avater.png" style="width: 90px; border-radius: 50%;">
           </div>
         </div>
       </div>
@@ -47,13 +47,4 @@
     font-weight: bold;
   }
 
-  .card-icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 10px;
-  }
-
-  .tag-item {
-    margin-right: 10px;
-  }
 </style>

@@ -8,7 +8,7 @@
         :toolbars="toolbars"
         @imgAdd="$imgAdd"
         class="blogcontent"
-        ref="md"
+        ref=md
       />
       <el-row style="margin-bottom:20px">
         <el-col :span="16">
@@ -19,7 +19,8 @@
             placeholder="请选择标签"
             style="width:100%"
           >
-            <el-option v-for="tag in options" :key="tag.id" :label="tag.tagName" :value="tag.id"></el-option>
+            <el-option v-for="tag in options" :key="tag.id" :label="tag.tagName"
+                       :value="tag.id"></el-option>
           </el-select>
         </el-col>
         <el-col :span="6" :offset="2">
@@ -31,68 +32,70 @@
   </section>
 </template>
 <script>
-// import mavonEditor from 'mavon-editor'
-// import 'mavon-editor/dist/css/index.css'
-export default {
-  data() {
-    return {
-      title: "",
-      context: "", //输入的数据
-      toolbars: {
-        bold: true, // 粗体
-        italic: true, // 斜体
-        header: true, // 标题
-        underline: true, // 下划线
-        mark: true, // 标记
-        superscript: true, // 上角标
-        quote: true, // 引用
-        ol: true, // 有序列表
-        link: true, // 链接
-        imagelink: true, // 图片链接
-        help: true, // 帮助
-        code: true, // code
-        subfield: true, // 是否需要分栏
-        fullscreen: true, // 全屏编辑
-        readmodel: true, // 沉浸式阅读
-        undo: true, // 上一步
-        trash: true, // 清空
-        save: true, // 保存（触发events中的save事件）
-        htmlcode: true, // 展示html源码
-        navigation: true // 导航目录
-      },
-      options: [],
-      tags: [],
-      username: ""
-    };
-  },
-  methods: {
-    publish() {
-      if (this.title.length < 1) {
-        this.$message({
-          message: "标题不能为空",
-          type: "warning"
-        });
-      } else if (this.context.length < 1) {
-        this.$message({
-          message: "内容不能为空",
-          type: "warning"
-        });
-      } else if (this.tags.length < 1) {
-        this.$message({
-          message: "请选择标签",
-          type: "warning"
-        });
-      } else {
-        let html = this.$refs.md.d_render;
-        let uId = sessionStorage.getItem("uId");
-        this.axios
+  // import mavonEditor from 'mavon-editor'
+  // import 'mavon-editor/dist/css/index.css'
+  export default {
+    data() {
+      return {
+        title: "",
+        context: "", //输入的数据
+        toolbars: {
+          bold: true, // 粗体
+          italic: true, // 斜体
+          header: true, // 标题
+          underline: true, // 下划线
+          mark: true, // 标记
+          superscript: true, // 上角标
+          quote: true, // 引用
+          ol: true, // 有序列表
+          link: true, // 链接
+          imagelink: true, // 图片链接
+          help: true, // 帮助
+          code: true, // code
+          subfield: true, // 是否需要分栏
+          fullscreen: true, // 全屏编辑
+          readmodel: true, // 沉浸式阅读
+          undo: true, // 上一步
+          trash: true, // 清空
+          save: true, // 保存（触发events中的save事件）
+          htmlcode: true, // 展示html源码
+          navigation: true // 导航目录
+        },
+        options: [],
+        tags: [],
+        username: "",
+        articleId: 0,
+      };
+    },
+    methods: {
+      publish() {
+        if (this.title.length < 1) {
+          this.$message({
+            message: "标题不能为空",
+            type: "warning"
+          });
+        } else if (this.context.length < 1) {
+          this.$message({
+            message: "内容不能为空",
+            type: "warning"
+          });
+        } else if (this.tags.length < 1) {
+          this.$message({
+            message: "请选择标签",
+            type: "warning"
+          });
+        } else {
+          let html = this.$refs.md.d_render;
+          let uId = sessionStorage.getItem("uId");
+          this.axios
           .post("/api/article/addArticle", {
             uid: uId,
             title: this.title,
             content: this.context,
-            contentHtml:html,
+            contentHtml: html,
             tags: this.tags,
-            status:1
+            status: 1,
+            id: this.articleId
           })
           .then(res => {
             if ((res.data.success)) {
@@ -110,35 +113,36 @@ export default {
           .catch(error => {
             console.log(error);
           });
-      }
-    },
-    saveArticle(){
-      if (this.title.length < 1) {
-        this.$message({
-          message: "标题不能为空",
-          type: "warning"
-        });
-      } else if (this.context.length < 1) {
-        this.$message({
-          message: "内容不能为空",
-          type: "warning"
-        });
-      } else if (this.tags.length < 1) {
-        this.$message({
-          message: "请选择标签",
-          type: "warning"
-        });
-      } else {
-        let html = this.$refs.md.d_render;
-        let uId = sessionStorage.getItem("uId");
-        this.axios
+        }
+      },
+      saveArticle() {
+        if (this.title.length < 1) {
+          this.$message({
+            message: "标题不能为空",
+            type: "warning"
+          });
+        } else if (this.context.length < 1) {
+          this.$message({
+            message: "内容不能为空",
+            type: "warning"
+          });
+        } else if (this.tags.length < 1) {
+          this.$message({
+            message: "请选择标签",
+            type: "warning"
+          });
+        } else {
+          let html = this.$refs.md.d_render;
+          let uId = sessionStorage.getItem("uId");
+          this.axios
           .post("/api/article/addArticle", {
             uid: uId,
             title: this.title,
             content: this.context,
-            contentHtml:html,
+            contentHtml: html,
             tags: this.tags,
-            status:0
+            status: 0,
+            id: this.articleId
           })
           .then(res => {
             if ((res.data.success)) {
@@ -149,62 +153,90 @@ export default {
               this.title = "";
               this.context = "";
               this.tags = [];
-            } else{
+            } else {
               this.$message.error(res.data.message);
             }
           })
           .catch(error => {
             console.log(error);
           });
+        }
+      },
+      // 绑定@imgAdd event
+      $imgAdd(pos, $file) {
+        // 第一步.将图片上传到服务器.
+        var formdata = new FormData();
+        formdata.append('image', $file);
+        this.axios({
+          url: '/api/filesUpload/imagesUpload',
+          method: 'post',
+          data: formdata,
+          headers: {'Content-Type': 'multipart/form-data'},
+        }).then(res => {
+          console.log(res)
+          // 第二步.将返回的url替换到文本原位置![...](0) -> ![...](url)
+          /**
+           * $vm 指为mavonEditor实例，可以通过如下两种方式获取
+           * 1. 通过引入对象获取: `import {mavonEditor} from ...` 等方式引入后，`$vm`为`mavonEditor`
+           * 2. 通过$refs获取: html声明ref : `<mavon-editor ref=md ></mavon-editor>，`$vm`为 `this.$refs.md`
+           */
+            // 第二步.将返回的url替换到文本原位置![...](0) -> ![...](url)
+          let url = res.data.url.replace("D:\\WorkingArea\\WebstormWorkSpace\\myblog\\src",
+            "../..");
+          this.$refs.md.$img2Url(pos, url.replace(/\\/g, "/"));
+
+        })
+      },
+      imgDel(pos) {
+        delete this.img_file[pos];
+      },
+      getTagAll() {
+        let uId = sessionStorage.getItem("uId");
+        this.axios
+        .get("/api/tag/getTagAll/" + uId)
+        .then(res => {
+          this.options = res.data.queryResult.list;
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      },
+      getArticle(articleId) {
+        if (articleId != 0) {
+          this.axios
+          .get("/api/article/getArticle", {
+            params: {articleId}
+          })
+          .then(res => {
+            this.title = res.data.queryResult.list[0].title;
+            this.context = res.data.queryResult.list[0].content;
+            for (var i in res.data.queryResult.list[0].tags) {
+              this.tags.push(res.data.queryResult.list[0].tags[i].tagName);
+            }
+          })
+        }
       }
-    },
-    $imgAdd(pos, $file) {
-      // 第一步.将图片上传到服务器.
-      var formdata = new FormData();
-      formdata.append("imgFile", $file);
-      this.axios({
-        url: "/api/uploadImg",
-        method: "post",
-        data: formdata
-        // headers: { "Content-Type": "multipart/form-data" }
-      }).then(response => {
-        console.log(response);
-        // 第二步.将返回的url替换到文本原位置![...](0) -> ![...](url)
-        /**
-         * $vm 指为mavonEditor实例，可以通过如下两种方式获取
-         * 1. 通过引入对象获取: `import {mavonEditor} from ...` 等方式引入后，`$vm`为`mavonEditor`
-         * 2. 通过$refs获取: html声明ref : `<mavon-editor ref=md ></mavon-editor>，`$vm`为 `this.$refs.md`
-         */
-        this.$refs.md.$img2Url(pos, response.data.url);
-      });
-    },
-    getTagAll() {
-      let uId = sessionStorage.getItem("uId");
-      this.axios
-      .get("/api/tag/getTagAll/" + uId)
-      .then(res => {
-        this.options = res.data.queryResult.list;
-      })
-      .catch(error => {
-        console.log(error);
-      });
     }
-  },
-  mounted() {
-    // console.log(window.document.getElementsByClassName('v-show-content-html')[0].innerHTML())
-    this.username = sessionStorage.getItem("username");
-    this.getTagAll();
+    ,
+    mounted() {
+      // console.log(window.document.getElementsByClassName('v-show-content-html')[0].innerHTML())
+      this.username = sessionStorage.getItem("username");
+      this.getTagAll();
+      this.articleId = this.$route.params.id;
+      this.getArticle(this.articleId);
+    }
   }
-};
+  ;
 </script>
 <style scoped>
-.blogcontent {
-  height: 400px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
-span {
-  margin-right: 5px;
-  cursor: pointer;
-}
+  .blogcontent {
+    height: 400px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  span {
+    margin-right: 5px;
+    cursor: pointer;
+  }
 </style>

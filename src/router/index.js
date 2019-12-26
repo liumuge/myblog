@@ -18,6 +18,11 @@ export default new Router({
       component: resolve => require(['@/components/pages/article'], resolve)
     },
     {
+      path:'/searchShow',
+      name:'searchShow',
+      component: resolve => require(['@/components/pages/searchShow'], resolve)
+    },
+    {
       path: '/contents',
       name: 'Contents',
       component: resolve => require(['@/components/pages/Contents'], resolve)
@@ -31,6 +36,11 @@ export default new Router({
       path: '/login',
       name: 'Login',
       component: resolve => require(['@/components/pages/Login'], resolve)
+    },
+    {
+      path: '/facelogin',
+      name: 'facelogin',
+      component: resolve => require(['@/components/pages/facelogin'], resolve)
     },
     {
       path: '/regist',

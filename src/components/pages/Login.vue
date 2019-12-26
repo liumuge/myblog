@@ -12,6 +12,7 @@
         @keyup.enter.native="login"
       ></el-input>
       <el-button class="login-btn" @click="login">登录</el-button>
+      <el-button class="login-btn" @click="faceLogin">刷脸登录</el-button>
       <p>
         还没有账号？请
         <el-button type="text">
@@ -73,6 +74,14 @@ export default {
             console.log(error);
           });
       }
+    },
+    faceLogin(){
+      this.$router.push({
+        name:"faceLogin",
+        params:{
+          id:1,
+        }
+      });
     }
   }
 };

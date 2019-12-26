@@ -3,7 +3,6 @@
     <Header></Header>
 
 
-
     <el-row id="artList" type="flex" justify="space-around" style="margin-top: 5%">
       <el-col :span="2"></el-col>
       <el-col :span="14" style="width: 55vw">
@@ -40,7 +39,7 @@
                   {{article.content | ellipsis}}
                 </div>
                 <div class="art-more">
-                    <el-button plain @click="goto(article.id)" >阅读更多</el-button>
+                  <el-button plain @click="goto(article.id)">阅读更多</el-button>
                   <div class="view"><i class="el-icon-view"></i>{{article.views}}</div>
                 </div>
               </div>
@@ -108,13 +107,13 @@
         return value
       }
     },
-    components: {Header, Footer, friend, tag,Introduction},
+    components: {Header, Footer, friend, tag, Introduction},
     methods: {
-      goto(articleId){
+      goto(articleId) {
         this.$router.push({
-          name:"article",
-          params:{
-            id:articleId,
+          name: "article",
+          params: {
+            id: articleId,
           }
         });
       },
@@ -137,11 +136,6 @@
           console.log(error);
         });
       },
-      article(articleId) {
-        this.$router.push({
-          path: '/article/' + articleId,
-        })
-      }
     },
     beforeRouteEnter(to, from, next) {
       next(vm => {
@@ -224,8 +218,8 @@
     color: #aaa;
     width: 500px;
     overflow: hidden;
-    text-overflow: ellipsis; //文本溢出显示省略号
-    white-space: normal;
+    text-overflow: ellipsis;
+  / / 文本溢出显示省略号 white-space: normal;
     word-break: break-all;
   }
 

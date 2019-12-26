@@ -1,15 +1,27 @@
 <template>
   <div class="home">
+    <Header></Header>
+
+
     <el-row id="artList" type="flex" justify="space-around" style="margin-top: 5%">
-      <el-col :span="16" style="width: 55vw">
+      <el-col :span="2"></el-col>
+      <el-col :span="14" style="width: 55vw">
         <el-row class="art-item" v-for="article in articleList">
           <el-card shadow="hover">
             <h5 style="height: 50px">
-              <router-link to="/article" tag="span" class="art-title">{{article.title}}
-              </router-link>
+              <a>
+                <span class="art-title" @click="goto(article.id)">{{article.title}}</span>
+              </a>
             </h5>
             <el-row class="art-info d-flex align-items-center justify-content-start">
-              <div class="art-time"><i class="el-icon-time"></i>{{article.creatTime}}</div>
+              <div class="art-time"><i class="el-icon-time"></i>
+                <span v-if="article.updateTime!=null">
+                  {{article.updateTime | formatDate('yyyy-MM-dd hh:mm:ss')}}
+                </span>
+                <span v-if="article.updateTime==null">
+                  {{article.creatTime | formatDate('yyyy-MM-dd hh:mm:ss')}}
+                </span>
+              </div>
               <div class="d-flex align-items-center">
                 <img class="tag" src="@/assets/images/tag.png"/>：
                 <el-tag size="mini" v-for="tag in article.tags" style="margin-left:10px">
@@ -19,16 +31,16 @@
             </el-row>
             <el-row class="art-body">
               <!-- 显示缩略图 未完成-->
-              <!-- <div class="side-img hidden-sm-and-down">
-              <img class="art-banner"
-              src="@/assets/images/vue.jpg"></div>-->
+              <div class="side-img hidden-sm-and-down">
+                <img class="art-banner"
+                     src="@/assets/images/vue.jpg"></div>
               <div class="side-abstract">
                 <div class="art-abstract">
                   {{article.content | ellipsis}}
                 </div>
                 <div class="art-more">
-                  <el-button @click="goto(article.id)" plain style="margin-left: 80%">查看</el-button>
-                  <el-button @click="check(article.id)" plain style="margin-right: 80%">编辑</el-button>
+                  <el-button plain @click="goto(article.id)">阅读更多</el-button>
+                  <div class="view"><i class="el-icon-view"></i>{{article.views}}</div>
                 </div>
               </div>
             </el-row>
@@ -45,10 +57,31 @@
         >
         </el-pagination>
       </el-col>
+      <el-col :span="5" class="hidden-sm-and-down" id="side">
+        <div class="item">
+          <introduction></introduction>
+        </div>
+        <div class="item">
+          <tag></tag>
+        </div>
+        <div class="item">
+          <friend></friend>
+        </div>
+      </el-col>
+      <el-col :span="1"></el-col>
     </el-row>
+
+    <Footer></Footer>
   </div>
 </template>
 <script>
+  import Header from "./Header.vue";
+  import Footer from "./Footer.vue";
+  import friend from './friend';
+  import tag from './tag';
+  import Introduction from './Introduction';
+  import marked from "marked";
+
   export default {
     data() {
       return {
@@ -59,7 +92,8 @@
           totalCount: 10,//总记录数
           totalPage: 1,//总页数
         },
-        status: 0,
+        status: 1,
+        search:'',
       };
     },
     filters: {
@@ -68,23 +102,35 @@
         if (!value) {
           return ''
         }
-        if (value.length > 500) {
-          return value.slice(0, 325) + '...'
+        if (value.length > 310) {
+          return value.slice(0, 200) + ' . . . '
         }
         return value
       }
     },
+    components: {Header, Footer, friend, tag, Introduction},
     methods: {
+      goto(articleId) {
+        this.$router.push({
+          name: "article",
+          params: {
+            id: articleId,
+          }
+        });
+      },
       changePage(currentPage) {
         this.params.currentPage = currentPage;
         this.getArticleList(this.params.currentPage, this.params.pageSize);
       },
-      getArticleList(currentPage, pageSize) {
-        status = this.status;
+      getArticleList(currentPage, pageSize,search) {
         let uId = sessionStorage.getItem("uId");
+        status = this.status;
+        currentPage=this.params.currentPage;
+        search=this.search;
+        pageSize=this.pageSize
         this.axios
-        .get("/api/article/getArticleList", {
-          params: {uId, currentPage, pageSize, status}
+        .get("/api/article/search", {
+          params: {currentPage, pageSize, status,uId,search}
         })
         .then(res => {
           this.articleList = res.data.queryResult.list[0].list;
@@ -94,25 +140,17 @@
           console.log(error);
         });
       },
-      check(articleId) {
-        this.$router.push({
-          name: "newEssay",
-          params: {
-            id: articleId,
-          }
-        });
-      },
-      goto(articleId) {
-        this.$router.push({
-          name: "article",
-          params: {
-            id: articleId,
-          }
-        });
-      },
+    },
+    beforeRouteEnter(to, from, next) {
+      next(vm => {
+        vm.article = to.query.article
+      })
     },
     mounted() {
-      this.getArticleList(this.params.currentPage, this.params.pageSize);
+      this.search = this.$route.params.search
+      this.articleList = this.$route.params.articleList;
+      this.params = this.$route.params.params;
+
     }
   };
 </script>
@@ -211,4 +249,3 @@
     background-color: #F9F9F9;
   }
 </style>
-

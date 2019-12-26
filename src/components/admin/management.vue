@@ -70,7 +70,7 @@
                 <template slot-scope="article">
                   <el-button type="text" size="small">置顶</el-button>
                   <el-button @click="goto(article.row.id)" type="text" size="small">查看</el-button>
-                  <el-button  type="text" size="small">编辑</el-button>
+                  <el-button @click="check(article.row.id)" type="text" size="small">编辑</el-button>
                   <el-button @click="removeArticle(article.row.id)"type="text" size="small">删除</el-button>
                 </template>
               </el-table-column>
@@ -198,6 +198,14 @@
             type: "error"
           });
           console.log(error);
+        });
+      },
+      check(articleId){
+        this.$router.push({
+          name: "newEssay",
+          params: {
+            id: articleId,
+          }
         });
       }
     },

@@ -15,6 +15,12 @@
                   {{article.creatTime | formatDate('yyyy-MM-dd hh:mm:ss')}}
                 </span>
               </div>
+              <div class="d-flex align-items-center">
+                <img class="tag" src="@/assets/images/tag.png"/>：
+                <el-tag size="mini" v-for="tag in article.tags" style="margin-left:10px">
+                  {{tag.tagName}}
+                </el-tag>
+              </div>
             </el-row>
           </div>
           <div v-html="article.contentHtml">
@@ -61,7 +67,8 @@
     },
     components: {Header, Footer},
     created() {
-      this.articleId = this.$route.params.id;
+      sessionStorage.setItem("articleId", this.$route.params.id);
+      this.articleId=sessionStorage.getItem("articleId")
       this.getArticle(this.articleId);
     },
   }
@@ -96,7 +103,10 @@
   img.has {
     width: 100%;
   }
-
+  img.tag {
+    width: 16px;
+    height: 16px;
+  }
   #statement {
     border-left: 3px solid #F56C6C;
     padding: 20px;

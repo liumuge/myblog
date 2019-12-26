@@ -12,8 +12,7 @@
           prefix-icon="el-icon-search"
           v-model="search"
           class="nav-search"
-          autocomplete="off"
-          name="aa"
+          @keyup.enter.native="getArticleList"
         ></el-input>
       </el-col>
       <el-col :span="9" :offset="2">
@@ -38,7 +37,8 @@
               <router-link to="/admin/newEssay">随笔</router-link>
             </li>
             <li>
-              {{this.username}} , <router-link @click.native="exit" to="/login" >退出</router-link>
+              {{this.username}} ,
+              <router-link @click.native="exit" to="/login">退出</router-link>
             </li>
           </ul>
         </nav>
@@ -52,21 +52,57 @@
     data() {
       return {
         search: "",
-        username: ""
+        username: "",
+        params: {
+          currentPage: 1,//页码
+          pageSize: 5,//每页显示个数
+          totalCount: 10,//总记录数
+          totalPage: 1,//总页数
+        },
+        status: 1,
       };
     },
     methods: {
-      getName: function () {
-        this.username = sessionStorage.getItem("username");
+      getArticleList(currentPage, pageSize,search) {
+        let uId = sessionStorage.getItem("uId");
+        status = this.status;
+        currentPage=this.params.currentPage;
+        search=this.search;
+        pageSize=this.pageSize
+        this.axios
+        .get("/api/article/search", {
+          params: {currentPage, pageSize, status,uId,search}
+        })
+        .then(res => {
+          if(res.data.success){
+            this.$router.push({
+              name:"searchShow",
+              params:{
+                search:search,
+                articleList:res.data.queryResult.list[0].list,
+                params:res.data.queryResult.list[0]
+              }
+            });
+          }else {
+            this.$message({
+              message: "服务器错误,请稍后重试",
+              type: "error"
+            });
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
       },
-      exit: function () {
+      exit() {
         sessionStorage.clear();
       }
     },
-    created(){
-      this.getName();
+    created() {
+      this.username=sessionStorage.getItem("username")
     }
-  };
+  }
+  ;
 </script>
 <style scoped>
   .header-wraper {
