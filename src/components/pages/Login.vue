@@ -13,12 +13,12 @@
       ></el-input>
       <el-button class="login-btn" @click="login">登录</el-button>
       <el-button class="login-btn" @click="faceLogin">刷脸登录</el-button>
-      <p>
-        还没有账号？请
-        <el-button type="text">
-          <router-link to="/regist">注册</router-link>
-        </el-button>
-      </p>
+<!--      <p>-->
+<!--        还没有账号？请-->
+<!--        <el-button type="text">-->
+<!--          <router-link to="/regist">注册</router-link>-->
+<!--        </el-button>-->
+<!--      </p>-->
     </div>
     <Footer></Footer>
   </div>

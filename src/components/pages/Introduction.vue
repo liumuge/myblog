@@ -4,12 +4,12 @@
       <div slot="header" class="d-flex align-items-center" style="height: 140px">
         <div class="demo-basic--circle">
           <div class="block" style="text-align: center;margin-top: 15%">
-            <img src="@/assets/images/avater.png" style="width: 90px; border-radius: 50%;">
+            <img :src="avatar" style="width: 90px; border-radius: 50%;">
           </div>
         </div>
       </div>
       <div>
-        既然选择了远方，便只顾风雨兼程🤔
+        {{signature}}
       </div>
     </el-card>
   </div>
@@ -19,20 +19,28 @@
   export default {
     data() {
       return {
-        fits: ['fill', 'contain', 'cover', 'none', 'scale-down'],
-        url: ''
+        avatar:'',
+        signature:'',
       }
     },
-    name: 'tag',
     methods: {
-      tag(name) {
-        this.$router.push({
-          name: 'tag',
-          params: {
-            'name': name
-          }
+      getUser() {
+        let id = sessionStorage.getItem("uId");
+        this.axios
+        .get("/api/user/findById", {
+          params: {id}
+        })
+        .then(res => {
+          this.avatar=res.data.queryResult.list[0].avatar;
+          this.signature = res.data.queryResult.list[0].signature;
+        })
+        .catch(error => {
+          console.log(error);
         });
       }
+    },
+    created() {
+      this.getUser();
     }
   }
 </script>

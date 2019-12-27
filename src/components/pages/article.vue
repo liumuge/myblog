@@ -40,17 +40,17 @@
               </el-form-item>
             </el-form>
           </div>
-          <el-collapse style="margin-left: 1%">
-            <el-collapse-item title="显示评论">
-              <div v-for="comment in article.comments" style="font-size: 15px">
-                <el-divider></el-divider>
-                <img src="@/assets/images/avater.png" style="width: 25px; border-radius: 50%;">
-                <span style="font-weight: bold;margin:0 1% 0 1%">匿名用户</span><span
-                style="color: #999999">{{comment.creatTime | formatDate('yyyy-MM-dd')}}</span>
-                <p style="margin:1% 0 0 4%">{{comment.comment}}</p>
-              </div>
-            </el-collapse-item>
-          </el-collapse>
+            <el-collapse style="margin-left: 1%" v-if="article.comments[0]!=null">
+              <el-collapse-item title="显示评论">
+                <div v-for="comment in article.comments" style="font-size: 15px">
+                  <el-divider></el-divider>
+                  <img src="@/assets/images/avater.png" style="width: 25px; border-radius: 50%;">
+                  <span style="font-weight: bold;margin:0 1% 0 1%">匿名用户</span><span
+                  style="color: #999999">{{comment.creatTime | formatDate('yyyy-MM-dd')}}</span>
+                  <p style="margin:1% 0 0 4%">{{comment.comment}}</p>
+                </div>
+              </el-collapse-item>
+            </el-collapse>
         </el-card>
       </el-col>
     </el-row>

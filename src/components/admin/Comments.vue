@@ -182,26 +182,40 @@
         });
       },
       removeComment(commentId) {
-        this.axios
-        .get("/api/comment/removeComment", {
-          params: {commentId,}
+        this.$confirm("此操作将永久删除该评论, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
         })
-        .then(res => {
-          if ((res.data.success)) {
+        .then(() => {
+          this.axios
+          .get("/api/comment/removeComment", {
+            params: {commentId,}
+          })
+          .then(res => {
+            if ((res.data.success)) {
+              this.$message({
+                message: "删除成功!",
+                type: "success",
+                onClose:this.getCommentList(this.params.currentPage, this.params.pageSize)
+              });
+            }
+          })
+          .catch(error => {
             this.$message({
-              message: "删除成功!",
-              type: "success",
-              onClose:this.getCommentList(this.params.currentPage, this.params.pageSize)
+              message: "删除失败!",
+              type: "error"
             });
-          }
-        })
-        .catch(error => {
-          this.$message({
-            message: "删除失败!",
-            type: "error"
+            console.log(error);
           });
-          console.log(error);
+        }).catch(r => {
+          console.log(r);
+          this.$message({
+            type: "info",
+            message: "已取消删除"
+          });
         });
+
       },
       goto(articleId,creatTime,articleTitle,comment){
         this.$router.push({

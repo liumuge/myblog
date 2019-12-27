@@ -37,8 +37,7 @@
               <router-link to="/admin/newEssay">随笔</router-link>
             </li>
             <li>
-              {{this.username}} ,
-              <router-link @click.native="exit" to="/login">退出</router-link>
+              <router-link @click.native="exit" to="/login">Sign Out</router-link>
             </li>
           </ul>
         </nav>
