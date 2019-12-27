@@ -183,7 +183,7 @@
       },
       removeComment(commentId) {
         this.axios
-        .get("/api/article/removeComment", {
+        .get("/api/comment/removeComment", {
           params: {commentId,}
         })
         .then(res => {

@@ -26,17 +26,31 @@
           <div v-html="article.contentHtml">
           </div>
           <div>
-            <el-form label-position="top" label-width="80px" :model="formLabelAlign">
+            <el-form label-position="top" label-width="80px">
               <el-divider></el-divider>
               <el-form-item label="评论">
-                <el-input type="textarea" v-model="contentsText" rows="3" maxlength="1000"  @input="descInput"></el-input>
+                <el-input type="textarea" placeholder="想对作者说点什么" v-model="contentsText" rows="3"
+                          maxlength="1000"
+                          @input="descInput"></el-input>
                 <div style="float:right;margin: 2% 2% 0 0">
                   <span style="font-size: 12px;color: #999999">评论将由博主筛选后显示，对所有人可见 | 还能输入<em>{{txtVal}}</em>个字符 &nbsp;&nbsp;<el-button
-                    type="primary" size="small" style="margin-left:15px" @click="addComment">发表评论</el-button> </span>
+                    type="primary" size="small" style="margin-left:15px"
+                    @click="addComment">发表评论</el-button> </span>
                 </div>
               </el-form-item>
             </el-form>
           </div>
+          <el-collapse style="margin-left: 1%">
+            <el-collapse-item title="显示评论">
+              <div v-for="comment in article.comments" style="font-size: 15px">
+                <el-divider></el-divider>
+                <img src="@/assets/images/avater.png" style="width: 25px; border-radius: 50%;">
+                <span style="font-weight: bold;margin:0 1% 0 1%">匿名用户</span><span
+                style="color: #999999">{{comment.creatTime | formatDate('yyyy-MM-dd')}}</span>
+                <p style="margin:1% 0 0 4%">{{comment.comment}}</p>
+              </div>
+            </el-collapse-item>
+          </el-collapse>
         </el-card>
       </el-col>
     </el-row>
@@ -60,7 +74,7 @@
     },
     methods: {
       descInput() {
-        this.txtVal = 1000-this.contentsText.length;
+        this.txtVal = 1000 - this.contentsText.length;
       },
       getArticle(articleId) {
         this.axios
@@ -68,30 +82,39 @@
           params: {articleId}
         })
         .then(res => {
+          console.log(res.data.queryResult.list[0]);
           this.article = res.data.queryResult.list[0];
         })
       },
-      addComment(){
-        let uId = sessionStorage.getItem("uId");
-        this.axios
-        .post("/api/comment/addComment", {
-          articleId:this.articleId,
-          comment:this.contentsText,
-          uid:uId,
-        })
-        .then(res => {
-          if ((res.data.success)) {
-            this.$message({
-              message: "发表成功,评论将由博主筛选后显示，对所有人可见",
-              type: "success"
-            });
-            this.contentsText="";
-          } else {
-            this.$message.error("发表失败,请稍后重试");
-          }
-        })
+      addComment() {
+        if (this.contentsText == "") {
+          this.$message({
+            message: "评论不能为空",
+            type: "warning"
+          });
+        } else {
+          let uId = sessionStorage.getItem("uId");
+          this.axios
+          .post("/api/comment/addComment", {
+            articleId: this.articleId,
+            comment: this.contentsText,
+            uid: uId,
+          })
+          .then(res => {
+            if ((res.data.success)) {
+              this.$message({
+                message: "发表成功,评论将由博主筛选后显示，对所有人可见",
+                type: "success"
+              });
+              this.contentsText = "";
+            } else {
+              this.$message.error("发表失败,请稍后重试");
+            }
+          })
+        }
+
       },
-      updateViews(articleId){
+      updateViews(articleId) {
         this.axios
         .get("/api/article/updateViews", {
           params: {articleId}
@@ -100,7 +123,7 @@
     },
     components: {Header, Footer},
     created() {
-      if (this.$route.params.id!=null){
+      if (this.$route.params.id != null) {
         sessionStorage.setItem("articleId", this.$route.params.id);
       }
       this.articleId = sessionStorage.getItem("articleId")
@@ -111,12 +134,6 @@
 </script>
 
 <style scoped>
-  #artcle-info {
-    padding: 20px;
-    background-image: url();
-    margin-bottom: 40px;
-  }
-
   #artcle-info .abstract {
     color: #ffffff;
     border-left: 3px solid #F56C6C;
@@ -145,9 +162,4 @@
     height: 16px;
   }
 
-  #statement {
-    border-left: 3px solid #F56C6C;
-    padding: 20px;
-    background-color: #EBEEF5;
-  }
 </style>
