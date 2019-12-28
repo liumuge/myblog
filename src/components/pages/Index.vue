@@ -142,6 +142,7 @@
       })
     },
     mounted() {
+      sessionStorage.setItem("uId","22");
       this.getArticleList(this.params.currentPage, this.params.pageSize);
     }
   };
@@ -217,8 +218,8 @@
     color: #aaa;
     width: 500px;
     overflow: hidden;
-    text-overflow: ellipsis;
-  / / 文本溢出显示省略号 white-space: normal;
+    text-overflow: ellipsis;// 文本溢出显示省略号
+    white-space: normal;
     word-break: break-all;
   }
 

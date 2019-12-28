@@ -18,6 +18,11 @@ export default new Router({
       component: resolve => require(['@/components/pages/article'], resolve)
     },
     {
+      path:'/apply',
+      name:'apply',
+      component: resolve => require(['@/components/pages/apply'], resolve)
+    },
+    {
       path:'/searchShow',
       name:'searchShow',
       component: resolve => require(['@/components/pages/searchShow'], resolve)
@@ -26,11 +31,6 @@ export default new Router({
       path: '/contents',
       name: 'Contents',
       component: resolve => require(['@/components/pages/Contents'], resolve)
-    },
-    {
-      path: '/lables',
-      name: 'Lables',
-      component: resolve => require(['@/components/pages/Lables'], resolve)
     },
     {
       path: '/login',

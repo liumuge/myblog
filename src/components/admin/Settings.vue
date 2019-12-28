@@ -31,7 +31,7 @@
 
     <el-card class="box-card">
       <div slot="header" class="clearfix">
-        <span style="font-weight: bold">修改头像</span>
+        <span style="font-weight: bold">修改头像<em style="color: #999999;font-size: 70%;font-weight:lighter;margin-left: 2%">点击头像修改</em></span>
       </div>
       <div>
         <el-upload

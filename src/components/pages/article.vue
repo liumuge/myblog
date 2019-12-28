@@ -23,7 +23,7 @@
               </div>
             </el-row>
           </div>
-          <div v-html="article.contentHtml">
+          <div v-html="article.contentHtml" style="word-wrap: break-word;">
           </div>
           <div>
             <el-form label-position="top" label-width="80px">
