@@ -35,16 +35,28 @@
       </div>
       <div>
         <el-upload
+          class="avatar-uploader"
           action="/api/user/avatarUpload"
-          list-type="picture-card"
+          :show-file-list="false"
           :data="params"
-          :on-preview="handlePictureCardPreview"
-          :on-remove="handleRemove">
-          <i class="el-icon-plus"></i>
+          :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload">
+          <img v-if="avatar" :src="avatar" class="avatar">
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
         </el-upload>
-        <el-dialog :visible.sync="dialogVisible">
-          <img width="100%" :src="dialogImageUrl" alt="">
-        </el-dialog>
+
+        <!-- 文件上传-->
+        <!-- <el-upload
+           action="/api/user/avatarUpload"
+           list-type="picture-card"
+           :data="params"
+           :on-preview="handlePictureCardPreview"
+           :on-remove="handleRemove">
+           <i class="el-icon-plus"></i>
+         </el-upload>
+         <el-dialog :visible.sync="dialogVisible">
+           <img width="100%" :src="dialogImageUrl" alt="">
+         </el-dialog>-->
       </div>
     </el-card>
 
@@ -60,9 +72,10 @@
         dialogVisible: false,
         introduction: '',
         signature: '',
-        params:{
-          uId:"",
+        params: {
+          uId: "",
         },
+        avatar: '',
       };
     },
     methods: {
@@ -74,6 +87,9 @@
         this.dialogImageUrl = file.url;
         this.dialogVisible = true;
       },
+      handleAvatarSuccess() {
+        this.getUser();
+      },
       getUser() {
         let id = sessionStorage.getItem("uId");
         this.axios
@@ -83,6 +99,7 @@
         .then(res => {
           this.signature = res.data.queryResult.list[0].signature;
           this.introduction = res.data.queryResult.list[0].introduction;
+          this.avatar = res.data.queryResult.list[0].avatar;
         })
         .catch(error => {
           console.log(error);
@@ -121,24 +138,38 @@
       ,
     },
     created() {
-      this.params.uId=sessionStorage.getItem("uId");
+      this.params.uId = sessionStorage.getItem("uId");
       this.getUser();
     }
   }
 </script>
 
 <style>
-  .transition-box {
-    margin-bottom: 10px;
-    width: 200px;
-    height: 100px;
-    border-radius: 4px;
-    background-color: #409EFF;
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
     text-align: center;
-    color: #fff;
-    padding: 40px 20px;
-    box-sizing: border-box;
-    margin-right: 20px;
+  }
+
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
   }
 </style>
 
