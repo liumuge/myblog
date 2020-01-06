@@ -1,11 +1,10 @@
 <template>
   <div class="home">
     <Header></Header>
-
     <el-row id="artList" type="flex" justify="space-around" style="margin-top: 5%">
       <el-col :span="2"></el-col>
       <el-col :span="14" style="width: 55vw">
-        <el-row class="art-item" v-for="article in articleList">
+        <el-row class="art-item" v-for="article in articleList" :key="article.id">
           <el-card shadow="hover">
             <h5 style="height: 50px">
               <a>
@@ -23,7 +22,7 @@
               </div>
               <div class="d-flex align-items-center">
                 <img class="tag" src="@/assets/images/tag.png"/>：
-                <el-tag size="mini" v-for="tag in article.tags" style="margin-left:10px">
+                <el-tag size="mini" v-for="tag in article.tags" :key="tag.id" style="margin-left:10px">
                   {{tag.tagName}}
                 </el-tag>
               </div>
@@ -135,11 +134,6 @@
           console.log(error);
         });
       },
-    },
-    beforeRouteEnter(to, from, next) {
-      next(vm => {
-        vm.article = to.query.article
-      })
     },
     mounted() {
       sessionStorage.setItem("uId","22");

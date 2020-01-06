@@ -75,11 +75,9 @@
         .then(res => {
           if(res.data.success){
             this.$router.push({
-              name:"searchShow",
-              params:{
+              path:"/searchShow",
+              query:{
                 search:search,
-                articleList:res.data.queryResult.list[0].list,
-                params:res.data.queryResult.list[0]
               }
             });
           }else {

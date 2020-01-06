@@ -2,7 +2,7 @@
   <div class="home">
     <el-row id="artList" type="flex" justify="space-around" style="margin-top: 5%">
       <el-col :span="16" style="width: 55vw">
-        <el-row class="art-item" v-for="article in articleList">
+        <el-row class="art-item" v-for="article in articleList" :key="article.id">
           <el-card shadow="hover">
             <h5 style="height: 50px">
               <router-link to="/article" tag="span" class="art-title">{{article.title}}
@@ -12,7 +12,7 @@
               <div class="art-time"><i class="el-icon-time"></i>{{article.creatTime}}</div>
               <div class="d-flex align-items-center">
                 <img class="tag" src="@/assets/images/tag.png"/>：
-                <el-tag size="mini" v-for="tag in article.tags" style="margin-left:10px">
+                <el-tag size="mini" v-for="tag in article.tags" :key="tag.id" style="margin-left:10px">
                   {{tag.tagName}}
                 </el-tag>
               </div>

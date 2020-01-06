@@ -17,7 +17,7 @@
               </div>
               <div class="d-flex align-items-center">
                 <img class="tag" src="@/assets/images/tag.png"/>：
-                <el-tag size="mini" v-for="tag in article.tags" style="margin-left:10px">
+                <el-tag size="mini" v-for="tag in article.tags" :key="tag.id" style="margin-left:10px">
                   {{tag.tagName}}
                 </el-tag>
               </div>

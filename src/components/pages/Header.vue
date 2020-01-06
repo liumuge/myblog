@@ -5,14 +5,14 @@
         <router-link to="/">StarBlog</router-link>
       </h1>
       <nav class="header-nav">
-        <el-input
-          placeholder="请输入搜索内容"
-          prefix-icon="el-icon-search"
-          v-model="search"
-          class="nav-search"
-          autocomplete="off"
-          name="aa"
-        ></el-input>
+          <el-input
+            placeholder="请输入搜索内容"
+            prefix-icon="el-icon-search"
+            v-model="search"
+            class="nav-search"
+            @keyup.enter.native="getArticleList"
+          ></el-input>
+
         <!-- <div class="nav-search">
           <i class="wmui icon-search"></i>
           <input type="text" maxlength="30" value>
@@ -38,13 +38,49 @@ export default {
   data() {
     return {
       search: "",
-      username:""
+      username:"",
+      params: {
+        currentPage: 1,//页码
+        pageSize: 5,//每页显示个数
+        totalCount: 10,//总记录数
+        totalPage: 1,//总页数
+      },
+      status: 1,
     };
   },
   methods: {
     getName: function () {
       this.username = sessionStorage.getItem("username");
     },
+    getArticleList(currentPage, pageSize,search) {
+      let uId = sessionStorage.getItem("uId");
+      status = this.status;
+      currentPage=this.params.currentPage;
+      search=this.search;
+      pageSize=this.pageSize
+      this.axios
+      .get("/api/article/search", {
+        params: {currentPage, pageSize, status,uId,search}
+      })
+      .then(res => {
+        if(res.data.success){
+          this.$router.push({
+            path:"/searchShow",
+            query:{
+              search:search,
+            }
+          });
+        }else {
+          this.$message({
+            message: "服务器错误,请稍后重试",
+            type: "error"
+          });
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    }
   },
   created(){
     this.getName();
